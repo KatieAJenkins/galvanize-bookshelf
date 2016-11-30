@@ -19,4 +19,21 @@ router.get('/books', (req, res, next) => {
   });
 });
 
+router.get('/books/:id' , (req, res, next) => {
+  knex('books')
+  .where('id', req.params.id)
+  .first()
+  .then((book) => {
+    if (!book) {
+      return next();
+    }
+
+    res.send(book);
+})
+  .catch((err) => {
+    next(err);
+  });
+});
+
+
 module.exports = router;
