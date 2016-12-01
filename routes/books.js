@@ -122,47 +122,27 @@ router.delete('/books/:id' , (req, res, next) => {
   knex('books')
     .where('id' , req.params.id)
     .first()
+
     .then((data) => {
       if(!data) {
         return next();
       }
 
-    const book = data;
-    console.log("********");
-    console.log(book);
-    console.log('**********');
+      book = camelizeKeys(data);
 
-    const decamelBook = decamelizeKeys(book);
-      console.log("********");
-      console.log(book);
-      console.log(decamlBook);
-      console.log("******");
-
-      // var decamelBook = decamelizeKeys(data);
-      //
-      // console.log('**********');
-      // console.log(deCamelBook);
-      // console.log('*****');
-
-      return knex('books')
+      return knex('book')
         .del()
         .where('id' , req.params.id);
-        //
-        // delete deCamelBook.created_at; //delete key from Object
-        // delete deCamelBook.updated_at;
-    })
+      })
 
-    // .then(() => {
-    //   delete book.id;
-      // delete deCamelBook.created_at; //delete key from Object
-      // delete deCamelBook.updated_at;
-      res.send((book));
-
-
+    .then(() => {
+      delete artist.id;
+      res.send(artist);
     })
 
     .catch((err) => {
-      next(err);
+      delete book.id;
+      res.send(book);
     });
   });
 
