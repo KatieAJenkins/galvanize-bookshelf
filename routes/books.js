@@ -116,32 +116,54 @@ router.patch('/books/:id', (req, res, next) => {
         });
 });
 
+router.delete('/books/:id' , (req, res, next) => {
+  let book;
 
-// router.delete('/books/:id') , (req, res, next) => {
-//   let books;
-//
-//   knex('books')
-//     .where('id' , req.params.id)
-//     .first()
-//     .then((row) => {
-//       if(!row) {
-//         return next();
-//       }
-//
-//       var book = row;
-//
-//       return knex('book')
-//         .del()
-//         .where('id' , req.params.id);
-//     })
-//     .then(() => {
-//       delete book.id;
-//       res.send(book);
-//     })
-//
-//     .catch((err) => {
-//       next(err);
-//     });
-//   };
+  knex('books')
+    .where('id' , req.params.id)
+    .first()
+    .then((data) => {
+      if(!data) {
+        return next();
+      }
+
+    const book = data;
+    console.log("********");
+    console.log(book);
+    console.log('**********');
+
+    const decamelBook = decamelizeKeys(book);
+      console.log("********");
+      console.log(book);
+      console.log(decamlBook);
+      console.log("******");
+
+      // var decamelBook = decamelizeKeys(data);
+      //
+      // console.log('**********');
+      // console.log(deCamelBook);
+      // console.log('*****');
+
+      return knex('books')
+        .del()
+        .where('id' , req.params.id);
+        //
+        // delete deCamelBook.created_at; //delete key from Object
+        // delete deCamelBook.updated_at;
+    })
+
+    // .then(() => {
+    //   delete book.id;
+      // delete deCamelBook.created_at; //delete key from Object
+      // delete deCamelBook.updated_at;
+      res.send((book));
+
+
+    })
+
+    .catch((err) => {
+      next(err);
+    });
+  });
 
 module.exports = router;
