@@ -2,7 +2,10 @@
 
 const express = require('express');
 const knex = require('../knex');
-const {camelizeKeys,decamelizeKeys} = require('humps');
+const {
+    camelizeKeys,
+    decamelizeKeys
+} = require('humps');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const boom = require('boom');
@@ -42,72 +45,78 @@ router.get('/books/:id', (req, res, next) => {
         });
 });
 
-// TO DO //
 router.post('/books', (req, res, next) => {
-  // const {title, author, genre, description, cover_url} = req.body;
-  var body = req.body;
-  var newBook = {
-    title: body.title,
-    author: body.author,
-    genre: body.genre,
-    description: body.description,
-    cover_url: body.coverUrl
-  };
+    var body = req.body;
+    var newBook = {
+        title: body.title,
+        author: body.author,
+        genre: body.genre,
+        description: body.description,
+        cover_url: body.coverUrl
+    };
 
-console.log(newBook);
+    // console.log(newBook);
 
-
-
-  // if (!name || !name.trim()) {
-  //     // res.status(400).send("Name must not be blank.")
-  //     next(boom.create(400, 'Name must not be blank.'));
-  //     return;
-  //   }
-  //
-
+    //TO DO -- ERROR CHECKING//
+    // if (!name || !name.trim()) {
+    //     // res.status(400).send("Name must not be blank.")
+    //     next(boom.create(400, 'Name must not be blank.'));
+    //     return;
+    //   }
 
     knex('books')
-      .insert(decamelizeKeys(newBook), "*")
-      .then((data) => { //data = the object that comes back
-        const bookCamel = data[0]; //finding object in array
-        // console.log("***********");
-        // console.log(bookCamel);
-        // console.log("***********");
+        .insert(decamelizeKeys(newBook), "*")
+        .then((data) => { //data = the object that comes back
+            const deCamelBook = data[0]; //finding object in array
+            // console.log("***********");
+            // console.log(bookCamel);
+            // console.log("***********");
 
-        delete bookCamel.created_at; //delete key from Object
-        delete bookCamel.updated_at;
+            delete deCamelBook.created_at; //delete key from Object
+            delete deCamelBook.updated_at;
 
-        res.send(camelizeKeys(bookCamel));
-      })
+            res.send(camelizeKeys(deCamelBook));
+        })
 
-      .catch((err) => {
+    .catch((err) => {
         next(err);
-      });
     });
-//
-// router.patch('/books/:id' , (req, res, next) => {
-//   knex('books')
-//     .where('id', req.params.id)
-//     .first()
-//     .then((book) => {
-//       if (!book) {
-//         return next();
-//       }
-//
-//       return knex('books')
-//         .update({
-//           title: req.body.name
-//         }, '*')
-//         .where('id' , req.params.id);
-//       })
-//       .then((books) => {
-//         res.send(books[0]);
-//       })
-//       .catch((err) => {
-//         next(err);
-//       });
-//     });
-//
+});
+
+router.patch('/books/:id', (req, res, next) => {
+    var body = req.body;
+    var updateBook = {
+        title: body.title,
+        author: body.author,
+        genre: body.genre,
+        description: body.description,
+        cover_url: body.coverUrl
+    };
+
+    knex('books')
+        .where('id', req.params.id)
+        .first()
+        .then((data) => {
+            if (!data) {
+                return next();
+            }
+            return knex('books')
+                .update(decamelizeKeys(updateBook), '*')
+                .where('id', req.params.id);
+        })
+        .then((data) => {
+            const deCamelBook = data[0];
+
+            delete deCamelBook.created_at; //delete key from Object
+            delete deCamelBook.updated_at;
+            res.send(camelizeKeys(data[0]));
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
+
 // router.delete('/books/:id') , (req, res, next) => {
 //   let books;
 //
