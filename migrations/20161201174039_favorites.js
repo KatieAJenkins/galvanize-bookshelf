@@ -18,13 +18,3 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return knex.schema.dropTable('favorites');
 };
-
-// ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
-// │                                         favorites                                               │
-// ├────────────────┬─────────────────────────┬──────────────────────────────────────────────────────┤
-// │id              │serial                   │primary key                                           │
-// │book_id         │integer                  │not null references books(id) on delete cascade index │
-// |user_id         │integer                  │not null references users(id) on delete cascade index │
-// │created_at      │timestamp with time zone │not null default now()                                │
-// │updated_at      │timestamp with time zone │not null default now()                                │
-// └────────────────┴─────────────────────────┴──────────────────────────────────────────────────────┘
