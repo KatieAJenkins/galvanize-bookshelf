@@ -106,34 +106,17 @@ router.patch('/books/:id', (req, res, next) => {
         });
 });
 
-router.delete('/books/:id', (req, res, next) => {
-    let book;
-
-    knex('books')
-        .where('id', req.params.id)
-        .first()
-
-    .then((data) => {
-        if (!data) {
-            return next();
-        }
-
-        book = camelizeKeys(data);
-
-        return knex('book')
-            .del()
-            .where('id', req.params.id);
-    })
-
-    .then(() => {
-        delete book.id;
-        res.send(book);
-    })
-
-    .catch((err) => {
-        delete book.id;
-        res.send(book);
-    });
+router.delete('/books/:id', function(req,res,next) {
+  knex('books')
+  .where({id: req.params.id})
+  .first()
+  .del()
+  .then(function () {
+    res.sendStatus(200);
+  })
+  .catch(function (err) {
+    next(err);
+  });
 });
 
 module.exports = router;

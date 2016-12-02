@@ -14,8 +14,8 @@ const boom = require('boom');
 const bcrypt = require('bcrypt-as-promised');
 
 router.post('/users', (req, res, next) => {
-    var body = req.body;
-    var newUser = {
+    const body = req.body;
+    const newUser = {
         first_name: body.first_name,
         last_name: body.last_name,
         email: body.email,
