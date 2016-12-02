@@ -1,14 +1,17 @@
 'use strict';
 
 const express = require('express');
+const router = express.Router();
 const knex = require('../knex');
 const {
     camelizeKeys,
     decamelizeKeys
 } = require('humps');
 
-const router = express.Router();
 const boom = require('boom');
+
+//hash passwords
+const bcrypt = require('bcrypt-as-promised');
 
 router.post('/users', (req, res, next) => {
     var body = req.body;
@@ -27,12 +30,15 @@ router.post('/users', (req, res, next) => {
     //   }
 
     knex('users')
+      bcrypt.hash(req.body.password, 12)
         .insert(decamelizeKeys(newUser), "*")
         .then((data) => { //data = the object that comes back
             const deCamelUser = data[0]; //finding object in array
 
             delete deCamelUser.created_at; //delete key from Object
             delete deCamelUser.updated_at;
+
+            delete user.hashed_password;
 
             res.send(camelizeKeys(deCamelUser));
         })

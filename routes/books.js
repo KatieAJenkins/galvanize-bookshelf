@@ -126,8 +126,8 @@ router.delete('/books/:id', (req, res, next) => {
     })
 
     .then(() => {
-        delete artist.id;
-        res.send(artist);
+        delete book.id;
+        res.send(book);
     })
 
     .catch((err) => {
