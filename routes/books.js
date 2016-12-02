@@ -6,15 +6,9 @@ const {
     camelizeKeys,
     decamelizeKeys
 } = require('humps');
-// eslint-disable-next-line new-cap
+
 const router = express.Router();
 const boom = require('boom');
-// const bodyParser = require('bodyParser');
-
-// parse application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: false }));
-// // parse application/json
-// app.use(bodyParser.json());
 
 router.get('/books', (req, res, next) => {
     knex('books')
@@ -55,8 +49,6 @@ router.post('/books', (req, res, next) => {
         cover_url: body.coverUrl
     };
 
-    // console.log(newBook);
-
     //TO DO -- ERROR CHECKING//
     // if (!name || !name.trim()) {
     //     // res.status(400).send("Name must not be blank.")
@@ -68,9 +60,6 @@ router.post('/books', (req, res, next) => {
         .insert(decamelizeKeys(newBook), "*")
         .then((data) => { //data = the object that comes back
             const deCamelBook = data[0]; //finding object in array
-            // console.log("***********");
-            // console.log(bookCamel);
-            // console.log("***********");
 
             delete deCamelBook.created_at; //delete key from Object
             delete deCamelBook.updated_at;
@@ -109,6 +98,7 @@ router.patch('/books/:id', (req, res, next) => {
 
             delete deCamelBook.created_at; //delete key from Object
             delete deCamelBook.updated_at;
+
             res.send(camelizeKeys(data[0]));
         })
         .catch((err) => {
@@ -116,34 +106,34 @@ router.patch('/books/:id', (req, res, next) => {
         });
 });
 
-router.delete('/books/:id' , (req, res, next) => {
-  let book;
+router.delete('/books/:id', (req, res, next) => {
+    let book;
 
-  knex('books')
-    .where('id' , req.params.id)
-    .first()
+    knex('books')
+        .where('id', req.params.id)
+        .first()
 
     .then((data) => {
-      if(!data) {
-        return next();
-      }
+        if (!data) {
+            return next();
+        }
 
-      book = camelizeKeys(data);
+        book = camelizeKeys(data);
 
-      return knex('book')
-        .del()
-        .where('id' , req.params.id);
-      })
+        return knex('book')
+            .del()
+            .where('id', req.params.id);
+    })
 
     .then(() => {
-      delete artist.id;
-      res.send(artist);
+        delete artist.id;
+        res.send(artist);
     })
 
     .catch((err) => {
-      delete book.id;
-      res.send(book);
+        delete book.id;
+        res.send(book);
     });
-  });
+});
 
 module.exports = router;
