@@ -32,12 +32,7 @@ router.get('/token', (req, res, next) => {
 //         hashed_password: body.hashed_password,
 //     };
 //
-//     //TO DO -- ERROR CHECKING//
-//     // if (!name || !name.trim()) {
-//     //     // res.status(400).send("Name must not be blank.")
-//     //     next(boom.create(400, 'Name must not be blank.'));
-//     //     return;
-//     //   }
+//TODO Error Checking
 //
 //     knex('token')
 //         .insert(decamelizeKeys(newUser), "*")
