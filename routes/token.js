@@ -12,17 +12,6 @@ const bcrypt = require('bcrypt-as-promised');
 //to create token
 const jwt = require('jsonwebtoken');
 
-// router.get('/token', (req, res, next) => {
-//     knex('tokens')
-//         .then((tokens) => {
-//             const tokenCamel = camelizeKeys(tokens);
-//             res.send(tokenCamel);
-//         })
-//         .catch((err) => {
-//             next(err);
-//         });
-// });
-
 router.get('/token' , (req, res) => {
   var token = req.cookies.token;
 
@@ -47,13 +36,13 @@ router.post('/token', (req, res, next) => {
   }
 
   if(!newUser.hashed_password || newUser.hashed_password.length < 8) {
-    return next(boom.create(400, 'Password must not be blank'));
+    return next(boom.create(400, 'Bad email or password'));
   }
 
     let user;
 
     knex('users')
-        .where('email' , email)
+        .where('email' , newUser.email)
         .first()
         .then((row) => {
           if(!row) {
@@ -62,7 +51,7 @@ router.post('/token', (req, res, next) => {
 
           user = camelizeKeys(row);
 
-          return bcrypt.compare(password, user.hashedPassword);
+          return bcrypt.compare(newUser.hashed_password, user.hashedPassword);
         })
       .then(() => {
         delete user.hashed_password;
@@ -72,7 +61,7 @@ router.post('/token', (req, res, next) => {
           expiresIn: '3h'
         });
 
-        res.cookie('token', token, {
+        res.cookie('token', token, { //json header field
           httpOnly: true,
           expires: expiry,
           secure: router.get('env') === 'production'
@@ -82,7 +71,7 @@ router.post('/token', (req, res, next) => {
       })
 
       .catch(bcrypt.MISMATCH_ERROR, () => {
-        throw boom.create(400, 'Invalid login'); //bad email or password
+        throw boom.create(400, 'Bad email or password'); //bad email or password
       })
 
       .catch((err) => {
