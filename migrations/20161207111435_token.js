@@ -7,7 +7,7 @@ exports.up = function(knex, Promise) {
     //email
     table.string('email').notNullable().defaultTo('');
     //password
-    table.string('password').notNullable().defaultTo('');
+    table.string('hashed_password').notNullable().defaultTo('');
   });
 };
 
