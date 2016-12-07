@@ -49,12 +49,20 @@ router.post('/books', (req, res, next) => {
         cover_url: body.coverUrl
     };
 
-    //TO DO -- ERROR CHECKING//
-    // if (!name || !name.trim()) {
-    //     // res.status(400).send("Name must not be blank.")
-    //     next(boom.create(400, 'Name must not be blank.'));
-    //     return;
-    //   }
+    var errObj = {
+      title: boom.create(400, 'Title must not be blank'),
+      author: boom.create(400, 'Author must not be blank'),
+      genre: boom.create(400, 'Genre must not be blank'),
+      description: boom.create(400, 'Description must not be blank'),
+      cover_url: boom.create(400, 'Cover URL must not be blank')
+    };
+
+    for (var key in newBook) {
+      if (!(newBook[key])) {
+        next(errObj[key]);
+        return;
+      }
+    }
 
     knex('books')
         .insert(decamelizeKeys(newBook), "*")
