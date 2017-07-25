@@ -60,6 +60,7 @@ router.post('/token', (req, res, next) => {
         var token = jwt.sign({userID: user.id}, process.env.JWT_SECRET, {
           expiresIn: '3h'
         });
+        console.log(tokenp);
 
         res.cookie('token', token, { //json header field
           httpOnly: true,
